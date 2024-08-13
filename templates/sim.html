@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electric Field Simulator</title>
+    <link rel="stylesheet" href="../static/styles2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap">
+</head>
+<body>  
+    <header>
+        <div class="logo">
+            <img src="/static/logo.png">
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="sign-in"><i class="fas fa-sign-in-alt"></i> Sign in</a></li>
+                <li><a href="#" class="register"><i class="fas fa-user-plus"></i> Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="nav-extend">
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/">Simulator</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <main>
+            <section>
+                <h2>Simulation Input</h2>
+                <form method="POST">
+                    <label for="num_charges">Enter Num of Charges:</label>
+                    <input type="number" id="num_charges" name="num_charges" min="1" required> 
+                    <div id="charges"></div>
+                    <button type="submit">Generate Field</button>
+                </form>
+            </section>
+            {% if img_data %}
+            <section>
+                <h2>Simulation Result:</h2>
+                <img src="data:image/png;base64,{{ img_data }}">
+                <div>
+                    <h2>Electric Field at Each Charge:</h2>
+                    <ul class="field-values">
+                        {% for field in field_values %}
+                        <li>{{ field }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+            {% endif %}
+        </main>
+    </div>
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <ul class="socials">
+                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fab fa-google-plus"></i></a></li>
+                <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+            </ul>            
+        </div>
+    </footer>
+    <script>
+        document.getElementById('num_charges').addEventListener('input', function() {
+            const numCharges = this.value;
+            const chargesDiv = document.getElementById('charges');
+            chargesDiv.innerHTML = '';
+            for (let i = 0; i < numCharges; i++) {
+                chargesDiv.innerHTML += `
+                    <h3>Charge ${i + 1}</h3>
+                    <label for="x${i}">x: </label>
+                    <input type="number" id="x${i}" name="x${i}" step="any" required>
+                    <label for="y${i}">y: </label>
+                    <input type="number" id="y${i}" name="y${i}" step="any" required>
+                    <label for="q${i}">q: </label>
+                    <input type="number" id="q${i}" name="q${i}" step="any" required>
+                `;
+            }
+        });
+        document.querySelector('form').addEventListener('submit', function(e) {
+            document.getElementById('loading').style.display = 'flex';
+        });
+    
+        // Example: Remove loading after the image loads
+        // You can customize this based on how your app handles responses
+        {% if img_data %}
+        window.onload = function() {
+            document.getElementById('loading').style.display = 'none';
+        };
+        {% endif %}
+    </script>
+</body>
+</html>
